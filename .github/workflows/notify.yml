@@ -13,5 +13,6 @@ jobs:
         uses: SethCohen/github-releases-to-discord@v1
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          username: "Github: Stardew Companion"
+          username: "Github: App Store"
           reduce_headings: true
+          footer_timestamp: true
