@@ -1,4 +1,4 @@
-# Android App Release
+# Android App Store
 
 This will work as a central repository to display all apps I have made, with option to download, install and update the apps.
 
