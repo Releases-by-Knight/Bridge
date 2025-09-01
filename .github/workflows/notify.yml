@@ -12,7 +12,7 @@ jobs:
       - name: GitHub Releases to Discord
         uses: SethCohen/github-releases-to-discord@v1
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          webhook_url: ${{ secrets.DISCORD_APP_STORE }}
           username: "Github: App Store"
           reduce_headings: true
           footer_timestamp: true

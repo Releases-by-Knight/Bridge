@@ -1,0 +1,36 @@
+name: Update Appwrite
+on:
+  release:
+    types: [published]
+
+jobs:
+  github-releases-to-discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"   # removes leading 'v'
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Extracted version: $VERSION"
+
+      - name: Update Appwrite column
+        env:
+          APPWRITE_ENDPOINT: ${{ secrets.APPWRITE_ENDPOINT }}
+          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_TOKEN }}
+          COLLECTION_ID: "YOUR_COLLECTION_ID"
+          DOCUMENT_ID: "YOUR_DOCUMENT_ID"
+        run: |
+          curl -X PATCH "$APPWRITE_ENDPOINT/v1/tablesdb/${{ secrets.APPWRITE_DATABASE_ID}}/tables/${{ secrets.APPWRITE_TABLE_ID }}/68b585c20021dffba015" \
+            -H "X-Appwrite-Project: ${{ secrets.APPWRITE_PROJECT_ID }}" \
+            -H "X-Appwrite-Response-Format: 1.8.0"\
+            -H "X-Appwrite-Key: $APPWRITE_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+                "data": {
+                    "version": "new value"
+                }
+            }'
