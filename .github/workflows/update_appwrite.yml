@@ -17,20 +17,21 @@ jobs:
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Extracted version: $VERSION"
 
-      - name: Update Appwrite column
-        env:
-          APPWRITE_ENDPOINT: ${{ secrets.APPWRITE_ENDPOINT }}
-          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_TOKEN }}
-          COLLECTION_ID: "YOUR_COLLECTION_ID"
-          DOCUMENT_ID: "YOUR_DOCUMENT_ID"
+      - name: Appwrite action
+        uses: appwrite/setup-for-appwrite@v2
+        with:
+          method: key
+          key: ${{ secrets.APPWRITE_API_TOKEN }}
+          project: ${{ secrets.APPWRITE_PROJECT_ID }}
+          self_signed: false
+      
+      - name: Update Table Row
+        id: update_table_row
         run: |
-          curl -X PATCH "$APPWRITE_ENDPOINT/v1/tablesdb/${{ secrets.APPWRITE_DATABASE_ID}}/tables/${{ secrets.APPWRITE_TABLE_ID }}/68b585c20021dffba015" \
-            -H "X-Appwrite-Project: ${{ secrets.APPWRITE_PROJECT_ID }}" \
-            -H "X-Appwrite-Response-Format: 1.8.0"\
-            -H "X-Appwrite-Key: $APPWRITE_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{
-                "data": {
-                    "version": "new value"
-                }
-            }'
+          appwrite tables-db update-row \
+            --database-id "${{ secrets.APPWRITE_DATABASE_ID }}" \
+            --table-id "${{ secrets.APPWRITE_TABLE_ID }}" \
+            --row-id '68b585c20021dffba015' \
+            --data "{\"version\":\"${{ env.VERSION }}\"}"
+
+            
