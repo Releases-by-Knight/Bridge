@@ -4,8 +4,14 @@ on:
     types: [published]
 
 jobs:
-  github-releases-to-discord:
+  update:
     runs-on: ubuntu-latest
+    env: 
+      APPWRITE_ENDPOINT: ${{ secrets.APPWRITE_ENDPOINT }}
+      APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}
+      APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_TOKEN }}
+      APPWRITE_DATABASE_ID: ${{ secrets.APPWRITE_DATABASE_ID }}
+      APPWRITE_TABLE_ID: ${{ secrets.APPWRITE_TABLE_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -17,20 +23,25 @@ jobs:
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Extracted version: $VERSION"
 
-      - name: Appwrite action
-        uses: appwrite/setup-for-appwrite@v1
-        with:
-          method: key
-          key: ${{ secrets.APPWRITE_API_TOKEN }}
-          project: ${{ secrets.APPWRITE_PROJECT_ID }}
-          self_signed: false
+      - name: Install Appwrite
+        run: |
+          curl -sL https://appwrite.io/cli/install.sh | bash
+          appwrite -v
+      
+      - name: Setup Appwrite
+        run: |
+          appwrite client \
+          --endpoint $APPWRITE_ENDPOINT \
+          --project-id $APPWRITE_PROJECT_ID \
+          --key $APPWRITE_API_KEY
+
       
       - name: Update Table Row
         id: update_table_row
         run: |
           appwrite tables-db update-row \
-            --database-id "${{ secrets.APPWRITE_DATABASE_ID }}" \
-            --table-id "${{ secrets.APPWRITE_TABLE_ID }}" \
+            --database-id "$APPWRITE_DATABASE_ID" \
+            --table-id "$APPWRITE_TABLE_ID" \
             --row-id '68b585c20021dffba015' \
             --data "{\"version\":\"${{ env.VERSION }}\"}"
 
