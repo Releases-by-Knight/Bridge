@@ -18,7 +18,7 @@ jobs:
           echo "Extracted version: $VERSION"
 
       - name: Appwrite action
-        uses: appwrite/setup-for-appwrite@v2
+        uses: appwrite/setup-for-appwrite@v1
         with:
           method: key
           key: ${{ secrets.APPWRITE_API_TOKEN }}
