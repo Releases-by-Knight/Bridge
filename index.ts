@@ -59,7 +59,7 @@ await PromisePool.for(apkFiles)
 
 // Upload APKs
 const { results } = await PromisePool.for(apkFiles)
-  .withConcurrency(1)
+  .withConcurrency(3)
   .handleError(e => {
     console.error(e);
     process.exit(1);
