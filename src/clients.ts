@@ -1,4 +1,4 @@
-import { Client, TablesDB, Storage } from "node-appwrite";
+import { createClient } from '@supabase/supabase-js'
 import { env } from "./env";
 import { S3Client } from "@aws-sdk/client-s3";
 import { Octokit } from "@octokit/rest";
@@ -16,13 +16,9 @@ const s3Client = new S3Client({
   forcePathStyle: true, // important for custom endpoints
 });
 
-const appwriteClient = new Client();
-
-appwriteClient.setEndpoint(env.APPWRITE_ENDPOINT)
-  .setProject(env.APPWRITE_PROJECT_ID)
-  .setKey(env.APPWRITE_API_TOKEN);
+const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SECRET_KEYS)
 
 const github = new Octokit({ auth: env.GITHUB_TOKEN })
 
 
-export { appwriteClient, s3Client, github }
+export { supabase, s3Client, github }

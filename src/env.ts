@@ -1,9 +1,6 @@
 const requiredEnv = [
-  "APPWRITE_ENDPOINT",
-  "APPWRITE_PROJECT_ID",
-  "APPWRITE_API_TOKEN",
-  "APPWRITE_DATABASE_ID",
-  "APPWRITE_TABLE_ID",
+  "SUPABASE_URL",
+  "SUPABASE_SECRET_KEYS",
   "TEBI_ACCESS_ID",
   "TEBI_ACCESS_KEY",
   "GITHUB_TOKEN",
@@ -18,12 +15,15 @@ for (const key of requiredEnv) {
 
 // Optional: export a typed env object
 export const env = {
-  APPWRITE_ENDPOINT: process.env.APPWRITE_ENDPOINT!,
-  APPWRITE_PROJECT_ID: process.env.APPWRITE_PROJECT_ID!,
-  APPWRITE_API_TOKEN: process.env.APPWRITE_API_TOKEN!,
-  APPWRITE_DATABASE_ID: process.env.APPWRITE_DATABASE_ID!,
-  APPWRITE_TABLE_ID: process.env.APPWRITE_TABLE_ID!,
+  SUPABASE_URL: process.env.SUPABASE_URL!,
+  SUPABASE_SECRET_KEYS: process.env.SUPABASE_SECRET_KEYS!,
   TEBI_ACCESS_ID: process.env.TEBI_ACCESS_ID!,
   TEBI_ACCESS_KEY: process.env.TEBI_ACCESS_KEY!,
   GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
 } as const;
+
+export const Constants = {
+  SUPABASE_ID: 1,
+  BUCKET_NAME: "app-storage",
+  BUCKET_FOLDER: "com.knightshrestha.app_store",
+}
