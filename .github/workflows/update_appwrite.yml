@@ -9,40 +9,24 @@ jobs:
     env: 
       APPWRITE_ENDPOINT: ${{ secrets.APPWRITE_ENDPOINT }}
       APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}
-      APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_TOKEN }}
+      APPWRITE_API_TOKEN: ${{ secrets.APPWRITE_API_TOKEN }}
       APPWRITE_DATABASE_ID: ${{ secrets.APPWRITE_DATABASE_ID }}
       APPWRITE_TABLE_ID: ${{ secrets.APPWRITE_TABLE_ID }}
+      TEBI_ACCESS_ID: ${{ secrets.TEBI_ACCESS_ID }}
+      TEBI_ACCESS_KEY: ${{ secrets.TEBI_ACCESS_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          VERSION="${GITHUB_REF#refs/tags/v}"   # removes leading 'v'
-          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
-          echo "Extracted version: $VERSION"
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2.0.2
 
-      - name: Install Appwrite
-        run: |
-          curl -sL https://appwrite.io/cli/install.sh | bash
-          appwrite -v
-      
-      - name: Setup Appwrite
-        run: |
-          appwrite client \
-          --endpoint $APPWRITE_ENDPOINT \
-          --project-id $APPWRITE_PROJECT_ID \
-          --key $APPWRITE_API_KEY
-
+      - name: Install dependencies
+        run: bun install
       
       - name: Update Table Row
         id: update_table_row
-        run: |
-          appwrite tables-db update-row \
-            --database-id "$APPWRITE_DATABASE_ID" \
-            --table-id "$APPWRITE_TABLE_ID" \
-            --row-id '68b585c20021dffba015' \
-            --data "{\"version\":\"${{ env.VERSION }}\"}"
+        run: bun run main
 
             
