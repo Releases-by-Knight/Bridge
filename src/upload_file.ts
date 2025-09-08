@@ -11,16 +11,9 @@ import type { ABI } from "../types/enums";
 const bucketName = "app-storage";
 const folder = "com.knightshrestha.app_store";
 
-/**
- * Upload a file to S3-compatible storage (safe overwrite)
- * @param filePath Local path to file
- * @returns Permanent public URL of uploaded file
- */
 export async function uploadFile(filePath: string, abi: ABI): Promise<string> {
   const fileName = basename(filePath);
-  if (!fileName) {
-    throw new Error("Invalid file path: missing file name");
-  }
+  if (!fileName) throw new Error("Invalid file path: missing file name");
 
   const tempFileName = `${fileName}.tmp`;
   const tempKey = `${folder}/${tempFileName}`;
@@ -30,7 +23,7 @@ export async function uploadFile(filePath: string, abi: ABI): Promise<string> {
 
   const fileBuffer = await readFile(filePath);
 
-  // 1️⃣ Upload to a temporary key
+  // 1️⃣ Upload temporary file
   await s3Client.send(
     new PutObjectCommand({
       Bucket: bucketName,
@@ -41,11 +34,12 @@ export async function uploadFile(filePath: string, abi: ABI): Promise<string> {
     })
   );
 
-  // 2️⃣ Copy temporary file to final key
+  // 2️⃣ Copy temporary file to final key (URL-encode CopySource)
+  const copySource = encodeURIComponent(`${bucketName}/${tempKey}`);
   await s3Client.send(
     new CopyObjectCommand({
       Bucket: bucketName,
-      CopySource: `${bucketName}/${tempKey}`,
+      CopySource: copySource,
       Key: finalKey,
       ACL: "public-read",
     })
@@ -59,6 +53,6 @@ export async function uploadFile(filePath: string, abi: ABI): Promise<string> {
     })
   );
 
-  // 4️⃣ Return permanent public URL
+  // 4️⃣ Return permanent URL
   return `https://s3.tebi.io/${bucketName}/${finalKey}`;
 }
