@@ -7,11 +7,8 @@ jobs:
   update:
     runs-on: ubuntu-latest
     env: 
-      APPWRITE_ENDPOINT: ${{ secrets.APPWRITE_ENDPOINT }}
-      APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}
-      APPWRITE_API_TOKEN: ${{ secrets.APPWRITE_API_TOKEN }}
-      APPWRITE_DATABASE_ID: ${{ secrets.APPWRITE_DATABASE_ID }}
-      APPWRITE_TABLE_ID: ${{ secrets.APPWRITE_TABLE_ID }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEYS: ${{ secrets.SUPABASE_SECRET_KEYS }}
       TEBI_ACCESS_ID: ${{ secrets.TEBI_ACCESS_ID }}
       TEBI_ACCESS_KEY: ${{ secrets.TEBI_ACCESS_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -25,8 +22,7 @@ jobs:
       - name: Install dependencies
         run: bun install
       
-      - name: Update Table Row
-        id: update_table_row
+      - name: Update Database
         run: bun run main
 
             
