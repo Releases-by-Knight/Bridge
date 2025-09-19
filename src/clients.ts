@@ -1,9 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
 import { env } from "./env";
 import { S3Client } from "@aws-sdk/client-s3";
 import { Octokit } from "@octokit/rest";
-import { initializeApp, applicationDefault, cert } from 'firebase-admin/app';
-import { getFirestore, Timestamp, FieldValue, Filter } from 'firebase-admin/firestore';
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 
 const serviceAccount = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT!);
 
