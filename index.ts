@@ -1,12 +1,13 @@
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import PromisePool from "@supercharge/promise-pool";
-import { supabase, github } from "./src/clients";
+import { firestoreClient, github } from "./src/clients";
 import { uploadFile } from "./src/upload_file";
 import { ABI } from "./types/enums";
 import { getChecksum } from "./src/checksum";
 import { getNptTimestamp } from "./src/getTimestamp";
 import { Constants } from "./src/env";
+import { Timestamp } from "firebase-admin/firestore";
 
 const downloadDir = "apk_files";
 
@@ -84,49 +85,29 @@ async function main() {
 
     log("Updating database...");
 
-    const appId = Constants.SUPABASE_ID;
+    const appId = Constants.packageName;
 
     // Fetch app info
-    const { data: appCatalog, error: appCatalogErr } = await supabase
-      .from("app_catalog")
-      .select("package_name, version")
-      .eq("id", appId)
-      .limit(1)
-      .single();
+    const docRef = firestoreClient.collection('app_list').doc(appId);
 
-    if (appCatalogErr || !appCatalog) {
-      throw new Error(`Failed to fetch app catalog: ${appCatalogErr?.message || "Not found"}`);
-    }
+    const updated_at = Timestamp.now();
 
-
-    // Upsert APK links
-    const { data: appLinks, error: appLinksErr } = await supabase
-      .from("apk_links")
-      .upsert(
-        uploadResults.map((r) => ({
-          abi: r.abi,
-          package_name: appCatalog.package_name,
-          download_url: r.downloadUrl,
-          sha256: r.sha256,
-        })),
-        {
-          onConflict: "abi, package_name"
-        }
+    // update download link and version
+    await docRef.set({
+      "version": release.data.tag_name.slice(1),
+      updated_at,
+      "downloads": Object.fromEntries(
+        uploadResults.map(r => [
+          r.abi, {
+            updated_at,
+            download_url: r.downloadUrl,
+            sha256: r.sha256,
+          }
+        ])
       )
-      .select();
-
-    if (appLinksErr) throw appLinksErr;
-
-    // Update Version info
-    const { data: updatedApp, error: updateErr } = await supabase
-      .from("app_catalog")
-      .update({ version: release.data.tag_name.slice(1) })
-      .eq("id", appId)
-      .select();
-
-    if (updateErr) {
-      console.error("Failed to update app version:", updateErr);
-    }
+    }, {
+      merge: true
+    })
 
     log("Database updated. Task completed.");
   } catch (err) {

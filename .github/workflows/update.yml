@@ -1,4 +1,4 @@
-name: Update Appwrite
+name: Update Firebase
 on:
   release:
     types: [published]
@@ -7,8 +7,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     env: 
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_SECRET_KEYS: ${{ secrets.SUPABASE_SECRET_KEYS }}
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       TEBI_ACCESS_ID: ${{ secrets.TEBI_ACCESS_ID }}
       TEBI_ACCESS_KEY: ${{ secrets.TEBI_ACCESS_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
