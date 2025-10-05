@@ -22,7 +22,7 @@ async function main() {
     // Get latest release
     const release = await github.rest.repos.getLatestRelease({
       owner: "Releases-by-Knight",
-      repo: "Android-App-Store",
+      repo: "Bridge",
     });
 
     // Filter APK files and map metadata
