@@ -1,18 +1,18 @@
-name: Notify Discord
-on:
-  release:
-    types: [published]
+# name: Notify Discord
+# on:
+#   release:
+#     types: [published]
 
-jobs:
-  github-releases-to-discord:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: GitHub Releases to Discord
-        uses: SethCohen/github-releases-to-discord@v1
-        with:
-          webhook_url: ${{ secrets.DISCORD_APP_STORE }}
-          username: "Github: App Store"
-          reduce_headings: true
-          footer_timestamp: true
+# jobs:
+#   github-releases-to-discord:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#       - name: GitHub Releases to Discord
+#         uses: SethCohen/github-releases-to-discord@v1
+#         with:
+#           webhook_url: ${{ secrets.DISCORD_APP_STORE }}
+#           username: "Github: App Store"
+#           reduce_headings: true
+#           footer_timestamp: true
