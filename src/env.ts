@@ -21,7 +21,7 @@ export const env = {
 } as const;
 
 export const Constants = {
-  packageName: "com.knightshrestha.app_store",
+  packageName: "com.knightshrestha.bridge",
   BUCKET_NAME: "app-storage",
-  BUCKET_FOLDER: "com.knightshrestha.app_store",
+  BUCKET_FOLDER: "com.knightshrestha.bridge",
 }
